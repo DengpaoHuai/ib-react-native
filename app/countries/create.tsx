@@ -8,20 +8,17 @@ const ListCountriesScreen = () => {
 
   const createCountry = () => {
     console.log(name, population, region);
-    fetch(
-      "https://crudcrud.com/api/7584814a2f3c4548a5b9bd816f37ed57/countries",
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          name,
-          population,
-          region,
-        }),
-      }
-    );
+    fetch("https://crudcrud.com/api//countries", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        name,
+        population,
+        region,
+      }),
+    });
   };
 
   return (
