@@ -1,14 +1,16 @@
-import { StyleSheet, Text, View } from "react-native";
+import { Button, StyleSheet, Text, View } from "react-native";
 
 type CardViewProps = {
   title: string;
   description?: string;
+  onPress?: () => void;
   children: React.ReactNode;
 };
 
 const CardView: React.FC<CardViewProps> = ({
   title = "default",
   description = "default",
+  onPress,
   children,
 }) => {
   return (
@@ -16,6 +18,7 @@ const CardView: React.FC<CardViewProps> = ({
       <Text style={styles.title}>{title}</Text>
       <Text style={styles.description}>{description}</Text>
       {children}
+      <Button title="Press me" onPress={onPress} />
     </View>
   );
 };
