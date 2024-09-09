@@ -1,6 +1,6 @@
-import CardView from "@/components/CardView";
 import { useEffect, useState } from "react";
 import { Button, StyleSheet, Text, View } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 type Planet = {
   name: string;
@@ -28,25 +28,21 @@ type PlanetResponse = {
 
 const HomeScreen = () => {
   const [planets, setPlanets] = useState<Planet[]>([]);
-  const [refresh, setRefresh] = useState(false);
+  const [page, setPage] = useState(1);
+  const [count, setCount] = useState(0);
 
   useEffect(() => {
-    fetch("https://swapi.dev/api/planets/").then((response) => {
+    fetch("https://swapi.dev/api/planets?page=" + page).then((response) => {
       response.json().then((data: PlanetResponse) => {
         console.log("render");
         setPlanets(data.results);
+        setCount(data.count);
       });
     });
-  }, [refresh]);
+  }, [page]);
 
   return (
     <View style={styles.mainContainer}>
-      <Button
-        title="Refresh"
-        onPress={() => {
-          setRefresh(!refresh);
-        }}
-      />
       {planets.map((planet) => (
         <Text
           key={planet.url}
@@ -57,6 +53,28 @@ const HomeScreen = () => {
           {planet.name}
         </Text>
       ))}
+      <View
+        style={{
+          display: "flex",
+          flexDirection: "row",
+          justifyContent: "space-between",
+        }}
+      >
+        <Button
+          title="Previous"
+          disabled={page === 1}
+          onPress={() => {
+            setPage(page - 1);
+          }}
+        />
+        <Button
+          title="Next"
+          disabled={page * 10 >= count}
+          onPress={() => {
+            setPage(page + 1);
+          }}
+        />
+      </View>
     </View>
   );
 };
