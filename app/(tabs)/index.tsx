@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { Button, StyleSheet, Text, View } from "react-native";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 type Planet = {
   name: string;
@@ -21,29 +20,35 @@ type Planet = {
 
 type PlanetResponse = {
   count: number;
-  next: string;
-  previous: string;
+  next: string | null;
+  previous: string | null;
   results: Planet[];
 };
 
 const HomeScreen = () => {
-  const [planets, setPlanets] = useState<Planet[]>([]);
-  const [page, setPage] = useState(1);
-  const [count, setCount] = useState(0);
+  const [planetsResponse, setPlanetsResponse] = useState<PlanetResponse>({
+    count: 0,
+    next: null,
+    previous: null,
+    results: [],
+  });
 
-  useEffect(() => {
-    fetch("https://swapi.dev/api/planets?page=" + page).then((response) => {
+  const getPlanets = (url: string) => {
+    fetch(url).then((response) => {
       response.json().then((data: PlanetResponse) => {
         console.log("render");
-        setPlanets(data.results);
-        setCount(data.count);
+        setPlanetsResponse(data);
       });
     });
-  }, [page]);
+  };
+
+  useEffect(() => {
+    getPlanets("https://swapi.dev/api/planets");
+  }, []);
 
   return (
     <View style={styles.mainContainer}>
-      {planets.map((planet) => (
+      {planetsResponse.results.map((planet) => (
         <Text
           key={planet.url}
           style={{
@@ -62,17 +67,17 @@ const HomeScreen = () => {
       >
         <Button
           title="Previous"
-          disabled={page === 1}
-          onPress={() => {
-            setPage(page - 1);
-          }}
+          disabled={!planetsResponse.previous}
+          onPress={() =>
+            planetsResponse.previous && getPlanets(planetsResponse.previous)
+          }
         />
         <Button
           title="Next"
-          disabled={page * 10 >= count}
-          onPress={() => {
-            setPage(page + 1);
-          }}
+          disabled={!planetsResponse.next}
+          onPress={() =>
+            planetsResponse.next && getPlanets(planetsResponse.next)
+          }
         />
       </View>
     </View>
