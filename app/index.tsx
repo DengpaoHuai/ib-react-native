@@ -2,11 +2,14 @@ import { getPlanets } from "@/services/planets";
 import {
   ActivityIndicator,
   Button,
+  Image,
   StyleSheet,
   Text,
   View,
 } from "react-native";
 import useFetch from "@/hooks/useFetch";
+import { Link, useNavigation, useRouter } from "expo-router";
+import { useEffect } from "react";
 
 type Planet = {
   name: string;
@@ -32,13 +35,16 @@ type PlanetResponse = {
   results: Planet[];
 };
 
-const HomeScreen = () => {
+const PlanetScreen = () => {
   const { data, loading, error, refetch } = useFetch<PlanetResponse>(
     "https://swapi.dev/api/planets"
   );
+  const router = useRouter();
 
   return (
     <View style={styles.mainContainer}>
+      <Link href="/countries">Go to Home</Link>
+      <Button onPress={() => router.push("/home")} title="Go to Home" />
       {loading ? (
         <ActivityIndicator size="large" color="#0000ff" />
       ) : (
@@ -66,4 +72,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default HomeScreen;
+export default PlanetScreen;
