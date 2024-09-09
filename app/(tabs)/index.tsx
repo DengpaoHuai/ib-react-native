@@ -28,6 +28,7 @@ type PlanetResponse = {
 
 const HomeScreen = () => {
   const [planets, setPlanets] = useState<Planet[]>([]);
+  const [refresh, setRefresh] = useState(false);
 
   useEffect(() => {
     fetch("https://swapi.dev/api/planets/").then((response) => {
@@ -36,10 +37,16 @@ const HomeScreen = () => {
         setPlanets(data.results);
       });
     });
-  }, []);
+  }, [refresh]);
 
   return (
     <View style={styles.mainContainer}>
+      <Button
+        title="Refresh"
+        onPress={() => {
+          setRefresh(!refresh);
+        }}
+      />
       {planets.map((planet) => (
         <Text
           key={planet.url}
