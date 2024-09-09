@@ -1,5 +1,12 @@
-import { useEffect, useState } from "react";
-import { Button, StyleSheet, Text, View } from "react-native";
+import { getPlanets } from "@/services/planets";
+import {
+  ActivityIndicator,
+  Button,
+  StyleSheet,
+  Text,
+  View,
+} from "react-native";
+import useFetch from "@/hooks/useFetch";
 
 type Planet = {
   name: string;
@@ -26,60 +33,26 @@ type PlanetResponse = {
 };
 
 const HomeScreen = () => {
-  const [planetsResponse, setPlanetsResponse] = useState<PlanetResponse>({
-    count: 0,
-    next: null,
-    previous: null,
-    results: [],
-  });
-
-  const getPlanets = (url: string) => {
-    fetch(url).then((response) => {
-      response.json().then((data: PlanetResponse) => {
-        console.log("render");
-        setPlanetsResponse(data);
-      });
-    });
-  };
-
-  useEffect(() => {
-    getPlanets("https://swapi.dev/api/planets");
-  }, []);
+  const { data, loading, error, refetch } = useFetch<PlanetResponse>(
+    "https://swapi.dev/api/planets"
+  );
 
   return (
     <View style={styles.mainContainer}>
-      {planetsResponse.results.map((planet) => (
-        <Text
-          key={planet.url}
-          style={{
-            fontSize: 40,
-          }}
-        >
-          {planet.name}
-        </Text>
-      ))}
-      <View
-        style={{
-          display: "flex",
-          flexDirection: "row",
-          justifyContent: "space-between",
-        }}
-      >
-        <Button
-          title="Previous"
-          disabled={!planetsResponse.previous}
-          onPress={() =>
-            planetsResponse.previous && getPlanets(planetsResponse.previous)
-          }
-        />
-        <Button
-          title="Next"
-          disabled={!planetsResponse.next}
-          onPress={() =>
-            planetsResponse.next && getPlanets(planetsResponse.next)
-          }
-        />
-      </View>
+      {loading ? (
+        <ActivityIndicator size="large" color="#0000ff" />
+      ) : (
+        data?.results.map((planet) => (
+          <Text
+            key={planet.url}
+            style={{
+              fontSize: 40,
+            }}
+          >
+            {planet.name}
+          </Text>
+        ))
+      )}
     </View>
   );
 };
