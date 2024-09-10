@@ -53,6 +53,7 @@ const CreateCountryScreen = () => {
           rules={{
             required: true,
           }}
+          keyboardType="numeric"
         ></CustomTextInput>
         <CustomTextInput
           control={control}

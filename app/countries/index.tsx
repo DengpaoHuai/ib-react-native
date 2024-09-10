@@ -22,6 +22,7 @@ const ListCountriesScreen = () => {
   );
 
   useEffect(() => {
+    console.log("test");
     dispatch(getCountriesAction());
   }, []);
 
