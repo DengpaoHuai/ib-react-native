@@ -1,4 +1,6 @@
-export const getPlanets = async (url: string) => {
-  const response = await fetch(url);
-  return await response.json();
+import swapiInstance from "./instances/swapi";
+
+export const getPlanets = async () => {
+  const response = await swapiInstance.get("planets");
+  return response.data;
 };

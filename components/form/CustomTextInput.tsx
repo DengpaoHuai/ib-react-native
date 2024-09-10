@@ -4,11 +4,11 @@ import {
   FieldValues,
   RegisterOptions,
 } from "react-hook-form";
-import { StyleSheet, Text, TextInput } from "react-native";
+import { KeyboardTypeOptions, StyleSheet, Text, TextInput } from "react-native";
 
 type RulesType<T extends FieldValues> = Omit<
   RegisterOptions<T, "name">,
-  "valueAsNumber" | "valueAsDate" | "setValueAs" | "disabled"
+  "valueAsDate" | "disabled"
 >;
 
 type CustomTextInputProps<T extends FieldValues> = {
@@ -17,6 +17,7 @@ type CustomTextInputProps<T extends FieldValues> = {
   name: string;
   placeholder: string;
   error: string | undefined;
+  keyboardType?: KeyboardTypeOptions | undefined;
 };
 
 function CustomTextInput<T extends FieldValues>({
@@ -25,6 +26,7 @@ function CustomTextInput<T extends FieldValues>({
   name,
   placeholder,
   rules,
+  keyboardType,
 }: CustomTextInputProps<T>) {
   return (
     <>
@@ -37,6 +39,7 @@ function CustomTextInput<T extends FieldValues>({
             onBlur={onBlur}
             onChangeText={onChange}
             value={value}
+            keyboardType={keyboardType}
             style={styles.input}
           />
         )}

@@ -1,6 +1,7 @@
+import { getPlanets } from "@/services/planets";
 import { useEffect, useState } from "react";
 
-const useFetch = <T>(getData: () => Promise<T>) => {
+const useFetch = <T>(url: string) => {
   const [data, setData] = useState<T | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -13,7 +14,7 @@ const useFetch = <T>(getData: () => Promise<T>) => {
   useEffect(() => {
     setLoading(true);
     setError("");
-    getData()
+    getPlanets(url)
       .then((response: T) => {
         setData(response);
       })

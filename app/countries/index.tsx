@@ -1,7 +1,12 @@
 import useFetch from "@/hooks/useFetch";
+import { getCountries } from "@/services/countries";
+import { setAll } from "@/store/slices/countries.slice";
+import { RootState, useCustomDispatch } from "@/store/store";
+import { getCountriesAction } from "@/store/thunkActions/countries.actions";
 import { Link, useNavigation } from "expo-router";
 import { Fragment, useEffect } from "react";
 import { ActivityIndicator, StyleSheet, Text, View } from "react-native";
+import { useDispatch, useSelector } from "react-redux";
 
 type Country = {
   name: string;
@@ -11,40 +16,31 @@ type Country = {
 };
 
 const ListCountriesScreen = () => {
-  const { data, loading, error, refetch } = useFetch<Country[]>(
-    "https://crudcrud.com/api/726b4e8544b94b61a6235891cfb91fe3/countries"
+  const dispatch = useCustomDispatch();
+  const { countries, loading } = useSelector(
+    (state: RootState) => state.countries
   );
 
-  const navigation = useNavigation();
-
   useEffect(() => {
-    navigation.addListener("focus", refetch);
-
-    return () => {
-      navigation.removeListener("focus", refetch);
-    };
+    dispatch(getCountriesAction());
   }, []);
 
   return (
     <View style={styles.mainContainer}>
       <Text>Mes pays</Text>
       <Link href="/countries/create">Go to Home</Link>
-      {loading ? (
-        <ActivityIndicator></ActivityIndicator>
-      ) : (
-        data?.map((country) => (
-          <Fragment key={country._id}>
-            <Text
-              style={{
-                fontSize: 40,
-              }}
-            >
-              {country.name}
-            </Text>
-            <Text>{country.population}</Text>
-          </Fragment>
-        ))
-      )}
+      {countries?.map((country) => (
+        <Fragment key={country._id}>
+          <Text
+            style={{
+              fontSize: 40,
+            }}
+          >
+            {country.name}
+          </Text>
+          <Text>{country.population}</Text>
+        </Fragment>
+      ))}
     </View>
   );
 };

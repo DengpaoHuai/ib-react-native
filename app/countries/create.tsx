@@ -1,15 +1,13 @@
 import CustomTextInput from "@/components/form/CustomTextInput";
 import { useForm } from "react-hook-form";
-import {
-  Button,
-  KeyboardAvoidingView,
-  ScrollView,
-  StyleSheet,
-} from "react-native";
+import { Button, KeyboardAvoidingView, ScrollView } from "react-native";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { countrySchema } from "@/schemas/country.schema";
 import { createCountry } from "@/services/countries";
+import { useDispatch } from "react-redux";
+import { add } from "@/store/actions/countries.actions";
+import { useRouter } from "expo-router";
 
 type Country = z.infer<typeof countrySchema>;
 
@@ -21,9 +19,13 @@ const CreateCountryScreen = () => {
   } = useForm<Country>({
     resolver: zodResolver(countrySchema),
   });
-
+  const dispatch = useDispatch();
+  const router = useRouter();
   const submit = (data: Country) => {
-    createCountry(data);
+    createCountry(data).then((country) => {
+      dispatch(add(country));
+      router.back();
+    });
   };
 
   return (

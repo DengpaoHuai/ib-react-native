@@ -36,9 +36,8 @@ type PlanetResponse = {
 };
 
 const PlanetScreen = () => {
-  const { data, loading, error, refetch } = useFetch<PlanetResponse>(
-    "https://swapi.dev/api/planets"
-  );
+  const { data, loading, error, refetch } =
+    useFetch<PlanetResponse>(getPlanets);
   const router = useRouter();
 
   return (
