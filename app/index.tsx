@@ -9,7 +9,8 @@ import {
 } from "react-native";
 import useFetch from "@/hooks/useFetch";
 import { Link, useNavigation, useRouter } from "expo-router";
-import { useEffect } from "react";
+import { useContext, useEffect } from "react";
+import { CustomModalContext } from "@/contexts/CustomModal";
 
 type Planet = {
   name: string;
@@ -39,11 +40,16 @@ const PlanetScreen = () => {
   const { data, loading, error, refetch } =
     useFetch<PlanetResponse>(getPlanets);
   const router = useRouter();
+  const { showModal } = useContext(CustomModalContext);
 
   return (
     <View style={styles.mainContainer}>
       <Link href="/countries">Go to Home</Link>
       <Button onPress={() => router.push("/home")} title="Go to Home" />
+      <Button
+        onPress={() => showModal("Hello", "descripot")}
+        title="display modal"
+      />
       {loading ? (
         <ActivityIndicator size="large" color="#0000ff" />
       ) : (
