@@ -1,12 +1,12 @@
-import useFetch from "@/hooks/useFetch";
-import { getCountries } from "@/services/countries";
-import { setAll } from "@/store/slices/countries.slice";
 import { RootState, useCustomDispatch } from "@/store/store";
-import { getCountriesAction } from "@/store/thunkActions/countries.actions";
-import { Link, useNavigation } from "expo-router";
+import {
+  deleteCountryAction,
+  getCountriesAction,
+} from "@/store/thunkActions/countries.actions";
+import { Link } from "expo-router";
 import { Fragment, useEffect } from "react";
-import { ActivityIndicator, StyleSheet, Text, View } from "react-native";
-import { useDispatch, useSelector } from "react-redux";
+import { Button, StyleSheet, Text, View } from "react-native";
+import { useSelector } from "react-redux";
 
 type Country = {
   name: string;
@@ -40,6 +40,10 @@ const ListCountriesScreen = () => {
             {country.name}
           </Text>
           <Text>{country.population}</Text>
+          <Button
+            onPress={() => dispatch(deleteCountryAction(country._id))}
+            title="Delete"
+          ></Button>
         </Fragment>
       ))}
     </View>

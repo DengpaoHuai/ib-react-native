@@ -1,6 +1,9 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { ADD, SET_ALL } from "../actions/countries.actions";
-import { getCountriesAction } from "../thunkActions/countries.actions";
+import {
+  deleteCountryAction,
+  getCountriesAction,
+} from "../thunkActions/countries.actions";
 
 export type Country = {
   _id: string;
@@ -30,18 +33,34 @@ const countriesSlice = createSlice({
     },
   },
   extraReducers: (builder) => {
-    builder.addCase(getCountriesAction.pending, (state) => {
-      state.loading = true;
-      state.error = null;
-    });
-    builder.addCase(getCountriesAction.fulfilled, (state, action) => {
-      state.countries = action.payload;
-      state.loading = false;
-    });
-    builder.addCase(getCountriesAction.rejected, (state, action) => {
-      state.error = action.error.message ?? null;
-      state.loading = false;
-    });
+    builder
+      .addCase(getCountriesAction.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(getCountriesAction.fulfilled, (state, action) => {
+        state.countries = action.payload;
+        state.loading = false;
+      })
+      .addCase(getCountriesAction.rejected, (state, action) => {
+        state.error = action.error.message ?? null;
+        state.loading = false;
+      });
+    builder
+      .addCase(deleteCountryAction.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(deleteCountryAction.fulfilled, (state, action) => {
+        state.countries = state.countries.filter(
+          (country) => country._id !== action.payload
+        );
+        state.loading = false;
+      })
+      .addCase(deleteCountryAction.rejected, (state, action) => {
+        state.error = action.error.message ?? null;
+        state.loading = false;
+      });
   },
 });
 

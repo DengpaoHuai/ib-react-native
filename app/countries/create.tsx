@@ -6,8 +6,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { countrySchema } from "@/schemas/country.schema";
 import { createCountry } from "@/services/countries";
 import { useDispatch } from "react-redux";
-import { add } from "@/store/actions/countries.actions";
 import { useRouter } from "expo-router";
+import { add } from "@/store/slices/countries.slice";
 
 type Country = z.infer<typeof countrySchema>;
 
@@ -22,10 +22,14 @@ const CreateCountryScreen = () => {
   const dispatch = useDispatch();
   const router = useRouter();
   const submit = (data: Country) => {
-    createCountry(data).then((country) => {
-      dispatch(add(country));
-      router.back();
-    });
+    createCountry(data)
+      .then((country) => {
+        dispatch(add(country));
+        router.back();
+      })
+      .catch((error) => {
+        console.error(error);
+      });
   };
 
   return (

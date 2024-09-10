@@ -11,3 +11,8 @@ export const getCountries = async () => {
   const response = await crudcrudInstance.get("/countries");
   return response.data;
 };
+
+export const removeCountryById = async (id: string) => {
+  await crudcrudInstance.delete(`/countries/${id}`);
+  return id;
+};
