@@ -1,42 +1,29 @@
-import { useRouter } from "expo-router";
-import { useState } from "react";
+import CustomTextInput from "@/components/form/CustomTextInput";
+import { useForm } from "react-hook-form";
 import {
   Button,
   KeyboardAvoidingView,
   ScrollView,
   StyleSheet,
-  Text,
-  TextInput,
-  View,
 } from "react-native";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { countrySchema } from "@/schemas/country.schema";
+import { createCountry } from "@/services/countries";
 
-const ListCountriesScreen = () => {
-  const [name, setName] = useState("");
-  const [population, setPopulation] = useState("");
-  const [region, setRegion] = useState("");
-  const [loading, setLoading] = useState(false);
-  const router = useRouter();
+type Country = z.infer<typeof countrySchema>;
 
-  const createCountry = () => {
-    console.log(name, population, region);
-    setLoading(true);
-    fetch(
-      "https://crudcrud.com/api/726b4e8544b94b61a6235891cfb91fe3/countries",
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          name,
-          population,
-          region,
-        }),
-      }
-    ).then(() => {
-      setLoading(false);
-      router.back();
-    });
+const CreateCountryScreen = () => {
+  const {
+    control,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+  } = useForm<Country>({
+    resolver: zodResolver(countrySchema),
+  });
+
+  const submit = (data: Country) => {
+    createCountry(data);
   };
 
   return (
@@ -47,37 +34,41 @@ const ListCountriesScreen = () => {
       keyboardVerticalOffset={80}
     >
       <ScrollView>
-        <TextInput
-          style={{ height: 40, borderColor: "red", borderWidth: 1 }}
-          onChangeText={setName}
-          value={name}
-          placeholder="Name"
+        <CustomTextInput<Country>
+          control={control}
+          error={errors.name ? errors.name.message : ""}
+          name="name"
+          placeholder="name"
+          rules={{
+            required: true,
+          }}
+        ></CustomTextInput>
+        <CustomTextInput
+          control={control}
+          error={errors.population ? errors.population.message : ""}
+          name="population"
+          placeholder="population"
+          rules={{
+            required: true,
+          }}
+        ></CustomTextInput>
+        <CustomTextInput
+          control={control}
+          error={errors.region ? errors.region.message : ""}
+          name="region"
+          placeholder="region"
+          rules={{
+            required: true,
+          }}
+        ></CustomTextInput>
+        <Button
+          onPress={handleSubmit(submit)}
+          title="Create"
+          disabled={isSubmitting}
         />
-        <TextInput
-          style={{ height: 40, borderColor: "red", borderWidth: 1 }}
-          onChangeText={setPopulation}
-          value={population}
-          placeholder="Population"
-        />
-        <TextInput
-          style={{ height: 40, borderColor: "red", borderWidth: 1 }}
-          onChangeText={setRegion}
-          value={region}
-          placeholder="Region"
-        />
-        <Button onPress={createCountry} title="Create" disabled={loading} />
       </ScrollView>
     </KeyboardAvoidingView>
   );
 };
 
-const styles = StyleSheet.create({
-  mainContainer: {
-    backgroundColor: "#fff",
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-});
-
-export default ListCountriesScreen;
+export default CreateCountryScreen;

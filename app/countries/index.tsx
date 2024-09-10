@@ -1,6 +1,6 @@
 import useFetch from "@/hooks/useFetch";
 import { Link, useNavigation } from "expo-router";
-import { useEffect } from "react";
+import { Fragment, useEffect } from "react";
 import { ActivityIndicator, StyleSheet, Text, View } from "react-native";
 
 type Country = {
@@ -33,14 +33,16 @@ const ListCountriesScreen = () => {
         <ActivityIndicator></ActivityIndicator>
       ) : (
         data?.map((country) => (
-          <Text
-            key={country._id}
-            style={{
-              fontSize: 40,
-            }}
-          >
-            {country.name}
-          </Text>
+          <Fragment key={country._id}>
+            <Text
+              style={{
+                fontSize: 40,
+              }}
+            >
+              {country.name}
+            </Text>
+            <Text>{country.population}</Text>
+          </Fragment>
         ))
       )}
     </View>
