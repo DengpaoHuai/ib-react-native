@@ -24,6 +24,7 @@ const ListCountriesScreen = () => {
             onPress={() => deleteCountryById(country._id)}
             title="Delete"
           ></Button>
+          <Link href={`/countries/update/${country._id}`}>Update</Link>
         </Fragment>
       ))}
     </View>

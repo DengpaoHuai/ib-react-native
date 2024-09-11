@@ -2,6 +2,7 @@ import {
   createCountry,
   getCountries,
   removeCountryById,
+  updateCountry,
 } from "@/services/countries";
 import { Country } from "@/types/countries.type";
 import { useEffect } from "react";
@@ -17,6 +18,7 @@ type CountriesStore = {
     deleteCountry: (id: string) => void;
     setLoading: (loading: boolean) => void;
     setError: (error: string) => void;
+    updateCountryFn: (country: Country) => void;
   };
 };
 
@@ -36,6 +38,12 @@ export const useCountriesStore = create<CountriesStore>((set) => ({
       set((state) => ({
         countries: state.countries.filter((country) => country._id !== id),
       })),
+    updateCountryFn: (country) =>
+      set((state) => ({
+        countries: state.countries.map((c) =>
+          c._id === country._id ? country : c
+        ),
+      })),
   },
 }));
 
@@ -44,7 +52,14 @@ const useCountries = () => {
     countries,
     loading,
     error,
-    actions: { setCountries, add, deleteCountry, setLoading, setError },
+    actions: {
+      setCountries,
+      add,
+      deleteCountry,
+      setLoading,
+      setError,
+      updateCountryFn,
+    },
   } = useCountriesStore();
 
   const getData = async () => {
@@ -95,11 +110,49 @@ const useCountries = () => {
     }
   };
 
+  const updateCountryById = async (country: Country) => {
+    try {
+      await updateCountry(
+        {
+          name: country.name,
+          population: country.population,
+          region: country.region,
+        },
+        country._id
+      );
+      updateCountryFn(country);
+    } catch (error) {
+      if (typeof error === "string") {
+        setError(error);
+      } else if (error instanceof Error) {
+        setError(error.message);
+      } else {
+        setError("An error occured");
+      }
+    }
+  };
+
+  const getCountryById = (id: string) => {
+    const country = countries.find((country) => country._id === id);
+    if (country) {
+      return country;
+    }
+    return null;
+  };
+
   useEffect(() => {
     getData();
   }, []);
 
-  return { countries, loading, error, addCountry, deleteCountryById };
+  return {
+    countries,
+    loading,
+    error,
+    addCountry,
+    deleteCountryById,
+    updateCountryById,
+    getCountryById,
+  };
 };
 
 export default useCountries;

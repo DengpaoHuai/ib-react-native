@@ -40,6 +40,7 @@ export default function RootLayout() {
           <Stack.Screen name="home" />
           <Stack.Screen name="countries" />
           <Stack.Screen name="countries/create" />
+          <Stack.Screen name="countries/update/:id" />
           <Stack.Screen name="+not-found" />
         </Stack>
       </CustomModalContextProvider>

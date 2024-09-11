@@ -16,3 +16,16 @@ export const removeCountryById = async (id: string) => {
   await crudcrudInstance.delete(`/countries/${id}`);
   return id;
 };
+
+export const getCountriesById = async (id: string) => {
+  const response = await crudcrudInstance.get(`/countries/${id}`);
+  return response.data as Country;
+};
+
+export const updateCountry = async (
+  country: Omit<Country, "_id">,
+  _id: string
+) => {
+  await crudcrudInstance.put(`/countries/${_id}`, country);
+  return country;
+};
