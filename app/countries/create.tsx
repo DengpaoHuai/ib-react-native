@@ -1,35 +1,26 @@
 import CustomTextInput from "@/components/form/CustomTextInput";
 import { useForm } from "react-hook-form";
 import { Button, KeyboardAvoidingView, ScrollView } from "react-native";
-import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { countrySchema } from "@/schemas/country.schema";
-import { createCountry } from "@/services/countries";
-import { useDispatch } from "react-redux";
 import { useRouter } from "expo-router";
-import { add } from "@/store/slices/countries.slice";
-
-type Country = z.infer<typeof countrySchema>;
+import useCountries from "@/store/useCountriesStore";
+import { Country } from "@/types/countries.type";
 
 const CreateCountryScreen = () => {
   const {
     control,
     handleSubmit,
     formState: { errors, isSubmitting },
-  } = useForm<Country>({
+  } = useForm<Omit<Country, "_id">>({
     resolver: zodResolver(countrySchema),
   });
-  const dispatch = useDispatch();
   const router = useRouter();
-  const submit = (data: Country) => {
-    createCountry(data)
-      .then((country) => {
-        dispatch(add(country));
-        router.back();
-      })
-      .catch((error) => {
-        console.error(error);
-      });
+  const { addCountry } = useCountries();
+
+  const submit = async (data: Omit<Country, "_id">) => {
+    await addCountry(data);
+    router.back();
   };
 
   return (

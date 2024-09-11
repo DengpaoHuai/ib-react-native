@@ -1,4 +1,6 @@
-import { countrySchema } from "@/schemas/country.schema";
-import { z } from "zod";
-
-export type Country = z.infer<typeof countrySchema>;
+export type Country = {
+  name: string;
+  population: string;
+  region: string;
+  _id: string;
+};

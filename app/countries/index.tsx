@@ -1,30 +1,10 @@
-import { RootState, useCustomDispatch } from "@/store/store";
-import {
-  deleteCountryAction,
-  getCountriesAction,
-} from "@/store/thunkActions/countries.actions";
+import useCountries from "@/store/useCountriesStore";
 import { Link } from "expo-router";
-import { Fragment, useEffect } from "react";
+import { Fragment } from "react";
 import { Button, StyleSheet, Text, View } from "react-native";
-import { useSelector } from "react-redux";
-
-type Country = {
-  name: string;
-  population: string;
-  region: string;
-  _id: string;
-};
 
 const ListCountriesScreen = () => {
-  const dispatch = useCustomDispatch();
-  const { countries, loading } = useSelector(
-    (state: RootState) => state.countries
-  );
-
-  useEffect(() => {
-    console.log("test");
-    dispatch(getCountriesAction());
-  }, []);
+  const { countries, deleteCountryById } = useCountries();
 
   return (
     <View style={styles.mainContainer}>
@@ -41,7 +21,7 @@ const ListCountriesScreen = () => {
           </Text>
           <Text>{country.population}</Text>
           <Button
-            onPress={() => dispatch(deleteCountryAction(country._id))}
+            onPress={() => deleteCountryById(country._id)}
             title="Delete"
           ></Button>
         </Fragment>

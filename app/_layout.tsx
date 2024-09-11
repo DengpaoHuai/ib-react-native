@@ -10,8 +10,6 @@ import { useEffect } from "react";
 import "react-native-reanimated";
 
 import { useColorScheme } from "@/hooks/useColorScheme";
-import { Provider } from "react-redux";
-import { store } from "@/store/store";
 import { Text } from "react-native";
 import { CustomModalContextProvider } from "@/contexts/CustomModal";
 
@@ -35,18 +33,16 @@ export default function RootLayout() {
   }
 
   return (
-    <Provider store={store}>
-      <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
-        <CustomModalContextProvider>
-          <Stack>
-            <Stack.Screen name="index" />
-            <Stack.Screen name="home" />
-            <Stack.Screen name="countries" />
-            <Stack.Screen name="countries/create" />
-            <Stack.Screen name="+not-found" />
-          </Stack>
-        </CustomModalContextProvider>
-      </ThemeProvider>
-    </Provider>
+    <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
+      <CustomModalContextProvider>
+        <Stack>
+          <Stack.Screen name="index" />
+          <Stack.Screen name="home" />
+          <Stack.Screen name="countries" />
+          <Stack.Screen name="countries/create" />
+          <Stack.Screen name="+not-found" />
+        </Stack>
+      </CustomModalContextProvider>
+    </ThemeProvider>
   );
 }
